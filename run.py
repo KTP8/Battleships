@@ -109,4 +109,10 @@ class Battleships:
                 else:
                     print("Computer missed!")
                     self.computer_guesses_board[row][col] = "X"
-                break
+                
+     # Check if all ships have been sunk
+    def all_ships_sunk(self, board):
+        for row in board:
+            if "S" in row:
+                return False
+        return True
