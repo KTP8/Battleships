@@ -53,3 +53,29 @@ class Battleships:
                     break
             if board == self.player_board:
                 print("Invalid placement. Try again.")
+
+    # Place all ships for a player
+    def place_all_ships(self):
+        print("Place your ships on the board.")
+        for ship, size in SHIP_SIZES.items():
+            self.place_ship(self.player_board, size, ship)
+        print("Computer is placing its ships.")
+        for ship, size in SHIP_SIZES.items():
+            self.place_ship(self.computer_board, size, ship)
+
+    # Validate a guess to ensure it is within bounds and has not been guessed already
+    def validate_guess(self, guess, guesses_board):
+        try:
+            row, col = map(int, guess.split(","))
+            if (row < 0 or row >= 10) or (col < 0 or col >= 10):
+                print("Coordinates out of bounds. Try again.")
+                return False
+            if guesses_board[row][col] != " ":
+                print("You have already guessed those coordinates. Try again.")
+                return False
+            return (row, col)
+        except ValueError:
+            print("Invalid input. Please enter row,col (e.g., 2,3).")
+            return False
+
+    
