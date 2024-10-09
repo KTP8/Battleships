@@ -30,5 +30,26 @@ class Battleships:
         self.computer_ships = []
         self.player_guesses = []
         self.computer_guesses = []
-
-        
+    
+     # Place a ship on a grid
+    def place_ship(self, board, ship_size, ship_name):
+        while True:
+            if board == self.player_board:
+                orientation = input(f"Place your {ship_name} (size {ship_size}). Choose orientation (H for horizontal, V for vertical): ").upper()
+                row, col = map(int, input(f"Enter starting coordinates for your {ship_name} (row,col): ").split(","))
+            else:
+                orientation = random.choice(["H", "V"])
+                row, col = random.randint(0, 9), random.randint(0, 9)
+            
+            if orientation == "H":
+                if col + ship_size <= 10 and all(board[row][c] == " " for c in range(col, col + ship_size)):
+                    for c in range(col, col + ship_size):
+                        board[row][c] = "S"
+                    break
+            elif orientation == "V":
+                if row + ship_size <= 10 and all(board[r][col] == " " for r in range(row, row + ship_size)):
+                    for r in range(row, row + ship_size):
+                        board[r][col] = "S"
+                    break
+            if board == self.player_board:
+                print("Invalid placement. Try again.")
