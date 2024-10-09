@@ -29,6 +29,10 @@ class Battleships:
         self.computer_guesses_board = create_grid()
         self.player_guesses = []
         self.computer_guesses = []
+        self.player_sunk_ships = 0
+        self.computer_sunk_ships = 0
+        self.last_computer_hit = None 
+        self.possible_next_guesses = []
 
     # Place a ship on a grid
     def place_ship(self, board, ship_size, ship_name):
@@ -92,13 +96,26 @@ class Battleships:
                     print("Hit!")
                     self.player_guesses_board[row][col] = "*"
                     self.computer_board[row][col] = "*"
+                    if self.check_if_ship_sunk(self.computer_board, row, col):
+                        self.player_sunk_ships += 1
+                        print(f"Congratulations! You sank one of the computer's ships!")
                 else:
                     print("Miss!")
                     self.player_guesses_board[row][col] = "X"
                 break
 
-    # Handle computer's turn
-    def computer_turn(self):
+    # Check if all parts of the ship have been sunk 
+    def check_if_ship_sunk(self, board, row, col):
+        return all(cell != "0" for cell in board [row])
+
+    # Handle computer's turn for both easy and hard levels
+    def computer_turn(self, difficulty="easy"):
+        if difficulty == "easy":
+            self.random_computer_turn()
+        elif difficulty == "hard":
+            self.smart_computer_turn()
+
+    def random_computer_turn(self):
         while True:
             row, col = random.randint(0, 9), random.randint(0, 9)
             if (row, col) not in self.computer_guesses:
@@ -108,10 +125,41 @@ class Battleships:
                     print("Computer hit one of your ships!")
                     self.computer_guesses_board[row][col] = "*"
                     self.player_board[row][col] = "*"
+                    if self.check_if_ship_sunk(self.player_board, row, col):
+                        self.computer_sunk_ships += 1
+                        print(f"The computer has sunk one of your ships!")
                 else:
                     print("Computer missed!")
                     self.computer_guesses_board[row][col] = "X"
                 break
+
+     # Computer logic for hard difficulty
+    def smart_computer_turn(self):
+        if self.last_computer_hit:
+            # Try to sink the ship by guessing nearby cells
+            row, col = self.last_computer_hit
+            possible_guesses = [(row + 1, col), (row - 1, col), (row, col + 1), (row, col - 1)]
+            random.shuffle(possible_guesses)
+            for r, c in possible_guesses:
+                if (r, c) not in self.computer_guesses and 0 <= r < 10 and 0 <= c < 10:
+                    self.computer_guesses.append((r, c))
+                    print(f"Computer guessed: {r},{c}")
+                    if self.player_board[r][c] == "O":
+                        print("Computer hit one of your ships!")
+                        self.computer_guesses_board[r][c] = "*"
+                        self.player_board[r][c] = "*"
+                        self.last_computer_hit = (r, c)
+                        if self.check_if_ship_sunk(self.player_board, r, c):
+                            self.computer_sunk_ships += 1
+                            print(f"The computer has sunk one of your ships!")
+                            self.last_computer_hit = None  # Reset after sinking a ship
+                        break
+                    else:
+                        print("Computer missed!")
+                        self.computer_guesses_board[r][c] = "X"
+                        break
+        else:
+            self.random_computer_turn()
 
     # Check if all ships have been sunk
     def all_ships_sunk(self, board):
@@ -121,7 +169,7 @@ class Battleships:
         return True
 
     # Main game loop with alternating turns
-    def play_game(self):
+    def play_game(self, difficulty="easy"):
         print("Welcome to Battleships!")
         print("\nInstructions:")
         print("- 'O' represents placement of your ships.")
@@ -133,30 +181,27 @@ class Battleships:
 
         player_name = input("Enter your name: ")
         print(f"Hello, {player_name}. Let's start!")
-        
+
         self.place_all_ships()
 
-        print("\nYour board with ship placements:")
-        display_grid(self.player_board)
-
-        print("\nComputer's board (hidden) where you will make guesses:")
-        display_grid(self.player_guesses_board)
-
         while True:
+            # Display scoreboard
+            print(f"\nScoreboard: {player_name} {self.player_sunk_ships} - {self.computer_sunk_ships} Computer")
+            
             # Player's turn
             print("\nYour guesses board:")
             display_grid(self.player_guesses_board)
-            print("\nComputer's board (hidden):")
-            display_grid(self.computer_guesses_board, hide_ships=True)
+            print("\nComputer's Guess Board:")
+            display_grid(self.computer_guesses_board)
             self.player_turn()
 
             if self.all_ships_sunk(self.computer_board):
-                print("Congratulations! You sank all the computer's ships. You win!")
+                print(f"Congratulations, {player_name}! You sank all the computer's ships. You win!")
                 break
 
             # Computer's turn
             print("\nComputer's turn:")
-            self.computer_turn()
+            self.computer_turn(difficulty=difficulty)
 
             if self.all_ships_sunk(self.player_board):
                 print("All your ships have been sunk. The computer wins.")
@@ -164,5 +209,6 @@ class Battleships:
 
 # Start the game
 if __name__ == "__main__":
+    difficulty = input("Choose difficulty (easy/hard): ").lower()
     game = Battleships()
-    game.play_game()
+    game.play_game(difficulty=difficulty)
