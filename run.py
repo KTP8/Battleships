@@ -123,12 +123,12 @@ class Battleships:
     def play_game(self):
         print("Welcome to Battleships!")
         print("\nInstructions:")
-        print("- 'O' represents your ships.")
+        print("- 'O' represents placement of your ships.")
         print("- 'X' represents a missed hit.")
         print("- '*' represents a successful hit.")
         print("You will place your ships and then take turns guessing where the computer's ships are located.")
         print("The computer will also guess where your ships are hidden.")
-        print("The game ends when one player sinks all of the other's ships.\n")
+        print("The game ends when one player sinks all of the other's ships!\n")
 
         player_name = input("Enter your name: ")
         print(f"Hello, {player_name}. Let's start!")
