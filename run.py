@@ -22,14 +22,15 @@ def display_grid(grid, hide_ships=False):
 
 # Class for Battleships game 
 class Battleships:
-    self.player_board = create_grid()
-        self.computer_board = create_grid()
-        self.player_guesses_board = create_grid()
-        self.computer_guesses_board = create_grid()
-        self.player_ships = []
-        self.computer_ships = []
-        self.player_guesses = []
-        self.computer_guesses = []
+    def __init__(self):
+        self.player_board = create_grid() # Indented by 4 spaces 
+        self.computer_board = create_grid() # Indented by 4 spaces 
+        self.player_guesses_board = create_grid() # Indented by 4 spaces 
+        self.computer_guesses_board = create_grid() # Indented by 4 spaces 
+        self.player_ships = [] # Indented by 4 spaces 
+        self.computer_ships = [] # Indented by 4 spaces 
+        self.player_guesses = [] # Indented by 4 spaces 
+        self.computer_guesses = [] # Indented by 4 spaces 
     
      # Place a ship on a grid
     def place_ship(self, board, ship_size, ship_name):
