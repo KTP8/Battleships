@@ -116,3 +116,31 @@ class Battleships:
             if "S" in row:
                 return False
         return True
+
+    # Main game loop
+    def play_game(self):
+        print("Welcome to Battleships!")
+        player_name = input("Enter your name: ")
+        print(f"Hello, {player_name}. Let's start!")
+        
+        self.place_all_ships()
+
+        while True:
+            # Player's turn
+            print("\nYour guesses board:")
+            display_grid(self.player_guesses_board)
+            print("\nComputer's board (hidden):")
+            display_grid(self.computer_guesses_board, hide_ships=True)
+            self.player_turn()
+
+            if self.all_ships_sunk(self.computer_board):
+                print("Congratulations! You sank all the computer's ships. You win!")
+                break
+
+            # Computer's turn
+            print("\nComputer's turn:")
+            self.computer_turn()
+
+            if self.all_ships_sunk(self.player_board):
+                print("All your ships have been sunk. The computer wins.")
+                break
