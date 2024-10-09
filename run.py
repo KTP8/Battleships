@@ -37,6 +37,7 @@ class Battleships:
         while True:
             if board == self.player_board:
                 orientation = input(f"Place your {ship_name} (size {ship_size}). Choose orientation (H for horizontal, V for vertical): ").upper()
+                print("Enter starting coordinates between (0,0) and (9,9)")
                 row, col = map(int, input(f"Enter starting coordinates for your {ship_name} (row,col): ").split(","))
             else:
                 orientation = random.choice(["H", "V"])
@@ -110,6 +111,7 @@ class Battleships:
                 else:
                     print("Computer missed!")
                     self.computer_guesses_board[row][col] = "X"
+                break
                 
      # Check if all ships have been sunk
     def all_ships_sunk(self, board):
