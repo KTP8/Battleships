@@ -32,28 +32,29 @@ class Battleships:
 
     # Place a ship on a grid
     def place_ship(self, board, ship_size, ship_name):
-        while True:
-            if board == self.player_board:
-                print(f"Place your {ship_name} (size {ship_size}).")
-                orientation = input("Choose orientation (H for horizontal, V for vertical): ").upper()
-                print("Enter starting coordinates between (0,0) and (9,9).")
-                row, col = map(int, input(f"Enter starting coordinates for your {ship_name} (row,col): ").split(","))
-            else:
-                orientation = random.choice(["H", "V"])
-                row, col = random.randint(0, 9), random.randint(0, 9)
+    while True:
+        if board == self.player_board:
+            print(f"Place your {ship_name} (size {ship_size}).")
+            orientation = input("Choose orientation (H for horizontal, V for vertical): ").upper()
+            print("Enter starting coordinates between (0,0) and (9,9) without parentheses.")
+            row, col = map(int, input(f"Enter starting coordinates for your {ship_name} (row,col): ").split(","))
+        else:
+            orientation = random.choice(["H", "V"])
+            row, col = random.randint(0, 9), random.randint(0, 9)
 
-            if orientation == "H":
-                if col + ship_size <= 10 and all(board[row][c] == " " for c in range(col, col + ship_size)):
-                    for c in range(col, col + ship_size):
-                        board[row][c] = "O"  # Use "O" to represent player ships on their board
-                    break
-            elif orientation == "V":
-                if row + ship_size <= 10 and all(board[r][col] == " " for r in range(row, row + ship_size)):
-                    for r in range(row, row + ship_size):
-                        board[r][col] = "O"  # Use "O" to represent player ships on their board
-                    break
-            if board == self.player_board:
-                print("Invalid placement. Try again.")
+        if orientation == "H":
+            if col + ship_size <= 10 and all(board[row][c] == " " for c in range(col, col + ship_size)):
+                for c in range(col, col + ship_size):
+                    board[row][c] = "O"  # Use "O" to represent player ships on their board
+                break
+        elif orientation == "V":
+            if row + ship_size <= 10 and all(board[r][col] == " " for r in range(row, row + ship_size)):
+                for r in range(row, row + ship_size):
+                    board[r][col] = "O"  # Use "O" to represent player ships on their board
+                break
+        if board == self.player_board:
+            print("Invalid placement. Try again.")
+
 
     # Place all ships for a player
     def place_all_ships(self):
