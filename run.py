@@ -78,4 +78,35 @@ class Battleships:
             print("Invalid input. Please enter row,col (e.g., 2,3).")
             return False
 
-    
+    # Handle player's turn
+    def player_turn(self):
+        while True:
+            guess = input("Enter your guess (row,col): ")
+            validated_guess = self.validate_guess(guess, self.player_guesses_board)
+            if validated_guess:
+                row, col = validated_guess
+                self.player_guesses.append((row, col))
+                if self.computer_board[row][col] == "S":
+                    print("Hit!")
+                    self.player_guesses_board[row][col] = "*"
+                    self.computer_board[row][col] = "*"
+                else:
+                    print("Miss!")
+                    self.player_guesses_board[row][col] = "X"
+                break
+
+    # Handle computer's turn
+    def computer_turn(self):
+        while True:
+            row, col = random.randint(0, 9), random.randint(0, 9)
+            if (row, col) not in self.computer_guesses:
+                self.computer_guesses.append((row, col))
+                print(f"Computer guessed: {row},{col}")
+                if self.player_board[row][col] == "S":
+                    print("Computer hit one of your ships!")
+                    self.computer_guesses_board[row][col] = "*"
+                    self.player_board[row][col] = "*"
+                else:
+                    print("Computer missed!")
+                    self.computer_guesses_board[row][col] = "X"
+                break
