@@ -20,3 +20,15 @@ def display_grid(grid, hide_ships=False):
         row_display = [" " if hide_ships and cell == "S" else cell for cell in row]
         print(f"{idx} " + " ".join(row_display))
 
+# Class for Battleships game 
+class Battleships:
+    self.player_board = create_grid()
+        self.computer_board = create_grid()
+        self.player_guesses_board = create_grid()
+        self.computer_guesses_board = create_grid()
+        self.player_ships = []
+        self.computer_ships = []
+        self.player_guesses = []
+        self.computer_guesses = []
+
+        
