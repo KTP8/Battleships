@@ -1,6 +1,6 @@
-import random 
+import random
 
-# Define ship types and sizes of ships 
+# Define ship types and their sizes
 SHIP_SIZES = {
     "Carrier": 5,
     "Battleship": 4,
@@ -13,45 +13,44 @@ SHIP_SIZES = {
 def create_grid():
     return [[" " for _ in range(10)] for _ in range(10)]
 
-# Display a grid with labels for rows and columns 
+# Display a grid with labels for rows and columns
 def display_grid(grid, hide_ships=False):
     print("  " + " ".join(str(i) for i in range(10)))
     for idx, row in enumerate(grid):
-        row_display = [" " if hide_ships and cell == "S" else cell for cell in row]
+        row_display = [" " if hide_ships and cell == "O" else cell for cell in row]
         print(f"{idx} " + " ".join(row_display))
 
-# Class for Battleships game 
+# Class for the Battleships game
 class Battleships:
     def __init__(self):
-        self.player_board = create_grid() # Indented by 4 spaces 
-        self.computer_board = create_grid() # Indented by 4 spaces 
-        self.player_guesses_board = create_grid() # Indented by 4 spaces 
-        self.computer_guesses_board = create_grid() # Indented by 4 spaces 
-        self.player_ships = [] # Indented by 4 spaces 
-        self.computer_ships = [] # Indented by 4 spaces 
-        self.player_guesses = [] # Indented by 4 spaces 
-        self.computer_guesses = [] # Indented by 4 spaces 
-    
-     # Place a ship on a grid
+        self.player_board = create_grid()
+        self.computer_board = create_grid()
+        self.player_guesses_board = create_grid()
+        self.computer_guesses_board = create_grid()
+        self.player_guesses = []
+        self.computer_guesses = []
+
+    # Place a ship on a grid
     def place_ship(self, board, ship_size, ship_name):
         while True:
             if board == self.player_board:
-                orientation = input(f"Place your {ship_name} (size {ship_size}). Choose orientation (H for horizontal, V for vertical): ").upper()
-                print("Enter starting coordinates between (0,0) and (9,9)")
+                print(f"Place your {ship_name} (size {ship_size}).")
+                orientation = input("Choose orientation (H for horizontal, V for vertical): ").upper()
+                print("Enter starting coordinates between (0,0) and (9,9).")
                 row, col = map(int, input(f"Enter starting coordinates for your {ship_name} (row,col): ").split(","))
             else:
                 orientation = random.choice(["H", "V"])
                 row, col = random.randint(0, 9), random.randint(0, 9)
-            
+
             if orientation == "H":
                 if col + ship_size <= 10 and all(board[row][c] == " " for c in range(col, col + ship_size)):
                     for c in range(col, col + ship_size):
-                        board[row][c] = "S"
+                        board[row][c] = "O"  # Use "O" to represent player ships on their board
                     break
             elif orientation == "V":
                 if row + ship_size <= 10 and all(board[r][col] == " " for r in range(row, row + ship_size)):
                     for r in range(row, row + ship_size):
-                        board[r][col] = "S"
+                        board[r][col] = "O"  # Use "O" to represent player ships on their board
                     break
             if board == self.player_board:
                 print("Invalid placement. Try again.")
@@ -70,7 +69,7 @@ class Battleships:
         try:
             row, col = map(int, guess.split(","))
             if (row < 0 or row >= 10) or (col < 0 or col >= 10):
-                print("Coordinates out of bounds. Try again.")
+                print("Coordinates out of bounds. Please enter coordinates between (0,0) and (9,9).")
                 return False
             if guesses_board[row][col] != " ":
                 print("You have already guessed those coordinates. Try again.")
@@ -83,12 +82,12 @@ class Battleships:
     # Handle player's turn
     def player_turn(self):
         while True:
-            guess = input("Enter your guess (row,col): ")
+            guess = input("Enter your guess (row,col) between (0,0) and (9,9): ")
             validated_guess = self.validate_guess(guess, self.player_guesses_board)
             if validated_guess:
                 row, col = validated_guess
                 self.player_guesses.append((row, col))
-                if self.computer_board[row][col] == "S":
+                if self.computer_board[row][col] == "O":
                     print("Hit!")
                     self.player_guesses_board[row][col] = "*"
                     self.computer_board[row][col] = "*"
@@ -104,7 +103,7 @@ class Battleships:
             if (row, col) not in self.computer_guesses:
                 self.computer_guesses.append((row, col))
                 print(f"Computer guessed: {row},{col}")
-                if self.player_board[row][col] == "S":
+                if self.player_board[row][col] == "O":
                     print("Computer hit one of your ships!")
                     self.computer_guesses_board[row][col] = "*"
                     self.player_board[row][col] = "*"
@@ -112,21 +111,35 @@ class Battleships:
                     print("Computer missed!")
                     self.computer_guesses_board[row][col] = "X"
                 break
-                
-     # Check if all ships have been sunk
+
+    # Check if all ships have been sunk
     def all_ships_sunk(self, board):
         for row in board:
-            if "S" in row:
+            if "O" in row:
                 return False
         return True
 
-    # Main game loop
+    # Main game loop with alternating turns
     def play_game(self):
         print("Welcome to Battleships!")
+        print("\nInstructions:")
+        print("- 'O' represents your ships.")
+        print("- 'X' represents a missed hit.")
+        print("- '*' represents a successful hit.")
+        print("You will place your ships and then take turns guessing where the computer's ships are located.")
+        print("The computer will also guess where your ships are hidden.")
+        print("The game ends when one player sinks all of the other's ships.\n")
+
         player_name = input("Enter your name: ")
         print(f"Hello, {player_name}. Let's start!")
         
         self.place_all_ships()
+
+        print("\nYour board with ship placements:")
+        display_grid(self.player_board)
+
+        print("\nComputer's board (hidden) where you will make guesses:")
+        display_grid(self.player_guesses_board)
 
         while True:
             # Player's turn
