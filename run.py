@@ -144,3 +144,8 @@ class Battleships:
             if self.all_ships_sunk(self.player_board):
                 print("All your ships have been sunk. The computer wins.")
                 break
+
+# Start the game
+if __name__ == "__main__":
+    game = Battleships()
+    game.play_game()
