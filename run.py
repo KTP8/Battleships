@@ -49,8 +49,10 @@ class Battleships:
                 self.display_board_with_ships()  # Show current state of the board with ships
                 print(f"Place your {ship_name} (size {ship_size}).")
                 orientation = input("Choose orientation (H for horizontal, V for vertical): ").upper()
-                print("Enter starting coordinates as (row,col) between (0,0) and (9,9).")
-                row, col = map(int, input(f"Enter starting coordinates for your {ship_name} (row,col): ").split(","))
+                print("Coordinate system is as follows: top left corner of the board is (0,0) and bottom right corner is (9,9)") # To avoid player confusion, this line explains orientation of the board is not that of a traditional (x,y) graph
+                print("Horizontal ships fill the spaces from left (start coordinate) to right & Vertical ships fill the spaces from top (start coordinate) down") # This line explains direction in which ships fill the board from the starting coordinate 
+                print("Enter starting coordinates as (row,col) between (0,0) and (9,9).") # To avoid player confusion, this line explains orientation of the board is not that of a traditional (x,y) graph
+                row, col = map(int, input(f"Enter starting coordinates for your {ship_name} (row,col) without parenthesis: ").split(","))
             else:
                 orientation = random.choice(["H", "V"])
                 row, col = random.randint(0, 9), random.randint(0, 9)
@@ -93,20 +95,23 @@ class Battleships:
         try:
             row, col = map(int, guess.split(","))
             if (row < 0 or row >= 10) or (col < 0 or col >= 10):
-                print("Coordinates out of bounds. Please enter coordinates between (0,0) and (9,9).")
+                print("Coordinates out of bounds. Please enter coordinates between (0,0) and (9,9) without parenthesis.")
+                print("Coordinate system is as follows: top left corner of the board is (0,0) and bottom right corner is (9,9)") # To avoid player confusion, this line explains orientation of the board is not that of a traditional (x,y) graph
                 return False
             if guesses_board[row][col] != " ":
                 print("You have already guessed those coordinates. Try again.")
+                print("Coordinate system is as follows: top left corner of the board is (0,0) and bottom right corner is (9,9)") # To avoid player confusion, this line explains orientation of the board is not that of a traditional (x,y) graph
                 return False
             return (row, col)
         except ValueError:
             print("Invalid input. Please enter row,col (e.g., 2,3).")
+            print("Coordinate system is as follows: top left corner of the board is (0,0) and bottom right corner is (9,9)") # To avoid player confusion, this line explains orientation of the board is not that of a traditional (x,y) graph
             return False
 
     # Handle player's turn
     def player_turn(self):
         while True:
-            guess = input("Enter your guess (row,col) between (0,0) and (9,9): ")
+            guess = input("Enter your guess (row,col) between (0,0) and (9,9) without parenthesis: ")
             validated_guess = self.validate_guess(guess, self.player_guesses_board)
             if validated_guess:
                 row, col = validated_guess
