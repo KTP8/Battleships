@@ -37,13 +37,19 @@ class Battleships:
         self.player_ships = []
         self.computer_ships = []
 
-    # Place a ship on a grid
+    # Display board after placing a ship to show its position
+    def display_board_with_ships(self):
+        print("\nCurrent board with placed ships:")
+        display_grid(self.player_board)
+
+    # Place a ship on a grid with real-time display of ship placement
     def place_ship(self, board, ship_size, ship_name):
         while True:
             if board == self.player_board:
+                self.display_board_with_ships()  # Show current state of the board with ships
                 print(f"Place your {ship_name} (size {ship_size}).")
                 orientation = input("Choose orientation (H for horizontal, V for vertical): ").upper()
-                print("Enter starting coordinates between (0,0) and (9,9) without parentheses.")
+                print("Enter starting coordinates as (row,col) between (0,0) and (9,9).")
                 row, col = map(int, input(f"Enter starting coordinates for your {ship_name} (row,col): ").split(","))
             else:
                 orientation = random.choice(["H", "V"])
@@ -229,13 +235,14 @@ class Battleships:
             print(f"\nScoreboard: {player_name} {self.player_sunk_ships} - {self.computer_sunk_ships} Computer")
             
             # Player's turn
-            print("\nYour guesses board:")
+            print("\nYour Guess Board:")
             display_grid(self.player_guesses_board)
-            print("\nComputer's Guess Board:")
-            display_grid(self.computer_guesses_board)
+            print("\nComputer's Guess Board (with your ships visible):")
+            display_grid(self.computer_guesses_board)  # Show player's ships on the computer's board
             self.player_turn()
 
             if self.all_ships_sunk(self.computer_board):
+                print(f"\nThe score is {player_name} 5 - {self.computer_sunk_ships} Computer.")
                 print(f"Congratulations, {player_name}! You sank all the computer's ships. You win!")
                 break
 
@@ -244,6 +251,7 @@ class Battleships:
             self.computer_turn(difficulty=difficulty)
 
             if self.all_ships_sunk(self.player_board):
+                print(f"\nThe score is {player_name} {self.player_sunk_ships} - 5 Computer.")
                 print("All your ships have been sunk. The computer wins.")
                 break
 
