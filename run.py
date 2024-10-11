@@ -57,10 +57,10 @@ class Battleships:
             if board == self.player_board:
                 self.display_board_with_ships()  # Show current state of the board with ships
                 print(f"\nPlace your {ship_name} (size {ship_size}).")
-                orientation = input("Choose orientation (H for horizontal, V for vertical): ").upper()
+                orientation = input("Choose orientation (H for horizontal, V for vertical): ").upper() 
                 print("\nCoordinate system is as follows: top left corner of the board is (0,0) and bottom right corner is (9,9)")
-                print("Horizontal ships fill the spaces from left (start coordinate) to right & Vertical ships fill the spaces from top (start coordinate) down.")
-                print("Enter starting coordinates as (row,col) between (0,0) and (9,9).")
+                print("\nHorizontal ships fill the spaces from left (start coordinate) to right & Vertical ships fill the spaces from top (start coordinate) down.")
+                print("\nEnter starting coordinates as (row,col) between (0,0) and (9,9).")
                 row, col = map(int, input(f"Enter starting coordinates for your {ship_name} (row,col) without parenthesis: ").split(","))
             else:
                 orientation = random.choice(["H", "V"])
