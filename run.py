@@ -14,10 +14,18 @@ def create_grid():
     return [[" " for _ in range(10)] for _ in range(10)]
 
 # Display a grid with labels for rows and columns
-def display_grid(grid, hide_ships=False):
+def display_grid(grid, hide_ships=False, player_board=None):
     print("  " + " ".join(str(i) for i in range(10)))
     for idx, row in enumerate(grid):
-        row_display = ["O" if cell == "O" and not hide_ships else cell for cell in row]
+        row_display = []
+        for col_idx, cell in enumerate(row):
+            if hide_ships:
+                if player_board and player_board[idx][col_idx] == "O":
+                    row_display.append("O")  # Display player's ships on computer's guess board
+                else:
+                    row_display.append(" " if cell == "O" else cell)
+            else:
+                row_display.append(cell)
         print(f"{idx} " + " ".join(row_display))
 
 # Class for the Battleships game
@@ -194,14 +202,12 @@ class Battleships:
     # Smart logic for hard difficulty
     def smart_computer_turn(self):
         if self.last_computer_hit and self.last_hit_direction:
-            # Continue guessing in the same direction
             row, col = self.last_computer_hit
             if self.last_hit_direction == "H":
                 possible_guesses = [(row, col + 1), (row, col - 1)]
             else:
                 possible_guesses = [(row + 1, col), (row - 1, col)]
         elif self.last_computer_hit:
-            # Try all four directions around the last hit
             row, col = self.last_computer_hit
             possible_guesses = [(row + 1, col), (row - 1, col), (row, col + 1), (row, col - 1)]
             random.shuffle(possible_guesses)
@@ -224,7 +230,6 @@ class Battleships:
                         self.last_computer_hit = None
                         self.last_hit_direction = None
                     else:
-                        # Determine direction of hits
                         if self.last_hit_direction is None:
                             if r == row:
                                 self.last_hit_direction = "H"
@@ -234,7 +239,6 @@ class Battleships:
                     print("Computer missed!")
                     self.computer_guesses_board[r][c] = "X"
                     if self.last_hit_direction:
-                        # If miss, reset hit direction
                         self.last_hit_direction = None
                     break
 
@@ -271,7 +275,7 @@ class Battleships:
             print("\nYour Guess Board:")
             display_grid(self.player_guesses_board)
             print("\nComputer's Guess Board (with your ships visible):")
-            display_grid(self.computer_guesses_board, hide_ships=False)  # Show player's ships on the computer's board
+            display_grid(self.computer_guesses_board, hide_ships=False, player_board=self.player_board)  # Ensure ships are visible
             self.player_turn()
 
             if self.all_ships_sunk(self.computer_board):
