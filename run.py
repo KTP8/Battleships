@@ -17,7 +17,7 @@ def create_grid():
 def display_grid(grid, hide_ships=False):
     print("  " + " ".join(str(i) for i in range(10)))
     for idx, row in enumerate(grid):
-        row_display = [" " if hide_ships and cell == "O" else cell for cell in row]
+        row_display = ["O" if cell == "O" and not hide_ships else cell for cell in row]
         print(f"{idx} " + " ".join(row_display))
 
 # Class for the Battleships game
@@ -47,11 +47,11 @@ class Battleships:
         while True:
             if board == self.player_board:
                 self.display_board_with_ships()  # Show current state of the board with ships
-                print(f"Place your {ship_name} (size {ship_size}).")
+                print(f"\nPlace your {ship_name} (size {ship_size}).")
                 orientation = input("Choose orientation (H for horizontal, V for vertical): ").upper()
-                print("Coordinate system is as follows: top left corner of the board is (0,0) and bottom right corner is (9,9)") 
-                print("Horizontal ships fill the spaces from left (start coordinate) to right & Vertical ships fill the spaces from top (start coordinate) down") 
-                print("Enter starting coordinates as (row,col) between (0,0) and (9,9).") 
+                print("\nCoordinate system is as follows: top left corner of the board is (0,0) and bottom right corner is (9,9)")
+                print("Horizontal ships fill the spaces from left (start coordinate) to right & Vertical ships fill the spaces from top (start coordinate) down.")
+                print("Enter starting coordinates as (row,col) between (0,0) and (9,9).")
                 row, col = map(int, input(f"Enter starting coordinates for your {ship_name} (row,col) without parenthesis: ").split(","))
             else:
                 orientation = random.choice(["H", "V"])
@@ -86,7 +86,7 @@ class Battleships:
         print("Place your ships on the board.")
         for ship, size in SHIP_SIZES.items():
             self.place_ship(self.player_board, size, ship)
-        print("Computer is placing its ships.")
+        print("\nComputer is placing its ships.")
         for ship, size in SHIP_SIZES.items():
             self.place_ship(self.computer_board, size, ship)
 
@@ -271,7 +271,7 @@ class Battleships:
             print("\nYour Guess Board:")
             display_grid(self.player_guesses_board)
             print("\nComputer's Guess Board (with your ships visible):")
-            display_grid(self.computer_guesses_board)  # Show player's ships on the computer's board
+            display_grid(self.computer_guesses_board, hide_ships=False)  # Show player's ships on the computer's board
             self.player_turn()
 
             if self.all_ships_sunk(self.computer_board):
