@@ -20,8 +20,9 @@ def display_grid(grid, hide_ships=False, player_board=None):
         row_display = []
         for col_idx, cell in enumerate(row):
             if hide_ships:
+                # If player_board is provided, display the player's ships on the computer's board using "O"
                 if player_board and player_board[idx][col_idx] == "O":
-                    row_display.append("O")  # Display player's ships on computer's guess board
+                    row_display.append("O")
                 else:
                     row_display.append(" " if cell == "O" else cell)
             else:
@@ -275,7 +276,7 @@ class Battleships:
             print("\nYour Guess Board:")
             display_grid(self.player_guesses_board)
             print("\nComputer's Guess Board (with your ships visible):")
-            display_grid(self.computer_guesses_board, hide_ships=False, player_board=self.player_board)  # Ensure ships are visible
+            display_grid(self.computer_guesses_board, hide_ships=True, player_board=self.player_board)  # Ensure ships are visible
             self.player_turn()
 
             if self.all_ships_sunk(self.computer_board):
