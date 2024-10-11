@@ -49,9 +49,9 @@ class Battleships:
                 self.display_board_with_ships()  # Show current state of the board with ships
                 print(f"Place your {ship_name} (size {ship_size}).")
                 orientation = input("Choose orientation (H for horizontal, V for vertical): ").upper()
-                print("Coordinate system is as follows: top left corner of the board is (0,0) and bottom right corner is (9,9)") # To avoid player confusion, this line explains orientation of the board is not that of a traditional (x,y) graph
-                print("Horizontal ships fill the spaces from left (start coordinate) to right & Vertical ships fill the spaces from top (start coordinate) down") # This line explains direction in which ships fill the board from the starting coordinate 
-                print("Enter starting coordinates as (row,col) between (0,0) and (9,9).") # To avoid player confusion, this line explains orientation of the board is not that of a traditional (x,y) graph
+                print("Coordinate system is as follows: top left corner of the board is (0,0) and bottom right corner is (9,9)") 
+                print("Horizontal ships fill the spaces from left (start coordinate) to right & Vertical ships fill the spaces from top (start coordinate) down") 
+                print("Enter starting coordinates as (row,col) between (0,0) and (9,9).") 
                 row, col = map(int, input(f"Enter starting coordinates for your {ship_name} (row,col) without parenthesis: ").split(","))
             else:
                 orientation = random.choice(["H", "V"])
@@ -90,22 +90,48 @@ class Battleships:
         for ship, size in SHIP_SIZES.items():
             self.place_ship(self.computer_board, size, ship)
 
+    # Review ship placement and give player option to modify
+    def review_ship_placement(self):
+        while True:
+            print("\nYour final ship placement:")
+            display_grid(self.player_board)
+            happy = input("Are you happy with your ship placement? (yes/no): ").lower()
+            if happy == "yes":
+                break
+            else:
+                print("\nCurrent ship placements:")
+                for i, ship in enumerate(SHIP_SIZES.keys()):
+                    print(f"{i+1}. {ship}: {self.player_ships[i]}")
+                ship_to_move = input("Enter the name of the ship you want to move: ").capitalize()
+                if ship_to_move in SHIP_SIZES:
+                    self.move_ship(ship_to_move)
+                else:
+                    print("Invalid ship name. Please try again.")
+
+    # Move a ship to new coordinates
+    def move_ship(self, ship_name):
+        index = list(SHIP_SIZES.keys()).index(ship_name)
+        old_coordinates = self.player_ships[index]
+        for r, c in old_coordinates:
+            self.player_board[r][c] = " "  # Clear old ship position
+
+        size = SHIP_SIZES[ship_name]
+        print(f"\nEnter new placement for {ship_name} (size {size}):")
+        self.place_ship(self.player_board, size, ship_name)
+
     # Validate a guess to ensure it is within bounds and has not been guessed already
     def validate_guess(self, guess, guesses_board):
         try:
             row, col = map(int, guess.split(","))
             if (row < 0 or row >= 10) or (col < 0 or col >= 10):
                 print("Coordinates out of bounds. Please enter coordinates between (0,0) and (9,9) without parenthesis.")
-                print("Coordinate system is as follows: top left corner of the board is (0,0) and bottom right corner is (9,9)") # To avoid player confusion, this line explains orientation of the board is not that of a traditional (x,y) graph
                 return False
             if guesses_board[row][col] != " ":
                 print("You have already guessed those coordinates. Try again.")
-                print("Coordinate system is as follows: top left corner of the board is (0,0) and bottom right corner is (9,9)") # To avoid player confusion, this line explains orientation of the board is not that of a traditional (x,y) graph
                 return False
             return (row, col)
         except ValueError:
             print("Invalid input. Please enter row,col (e.g., 2,3).")
-            print("Coordinate system is as follows: top left corner of the board is (0,0) and bottom right corner is (9,9)") # To avoid player confusion, this line explains orientation of the board is not that of a traditional (x,y) graph
             return False
 
     # Handle player's turn
@@ -234,6 +260,8 @@ class Battleships:
         print(f"Hello, {player_name}. Let's start!")
 
         self.place_all_ships()
+
+        self.review_ship_placement()
 
         while True:
             # Display scoreboard
